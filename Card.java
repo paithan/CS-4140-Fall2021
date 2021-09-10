@@ -35,5 +35,23 @@ public class Card {
             throw new IllegalArgumentException("Illegal color: " + color);
         }
     }
+    
+    
+    @Override
+    public String toString() {
+        String cardString = this.color + " " + number;
+        return cardString;
+    }
 
 } // end of Card.java
+
+
+
+
+
+
+
+
+
+
+
