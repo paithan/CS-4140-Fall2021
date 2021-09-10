@@ -43,6 +43,35 @@ public class Card {
         return cardString;
     }
     
+    
+    /**
+     * Gets the color.
+     *
+     * @return  The color of this card.
+     */
+    public String getColor() {
+        return this.color;
+    }
+    
+    /**
+     * Gets the number.
+     *
+     * @return The number value of this card.
+     */
+    public int getNumber() {
+        return this.number;
+    }
+    
+    /**
+     * Tests equality.
+     *
+     * @param otherCard  The card to compare with this.
+     * @return  true if they are the same card, false otherwise.
+     */
+    public boolean equals(Card otherCard) {
+        return this.color.equals(otherCard.color) && this.number == otherCard.number;
+    }
+    
     /**
      * Main method for testing.
      *
