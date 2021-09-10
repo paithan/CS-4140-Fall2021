@@ -42,6 +42,23 @@ public class Card {
         String cardString = this.color + " " + number;
         return cardString;
     }
+    
+    /**
+     * Main method for testing.
+     *
+     * @param args  Strings from the command line.
+     */
+    public static void main(String[] args) {
+        Card testCard = new Card("Red", 7);
+        System.out.println(testCard);
+        
+        try {
+            Card mauve = new Card("Mauve", 8);
+            System.out.println(mauve);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Mauve broke things, good!");
+        }
+    }
 
 } // end of Card.java
 
