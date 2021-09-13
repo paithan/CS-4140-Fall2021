@@ -39,7 +39,7 @@ public class Card {
     
     @Override
     public String toString() {
-        String cardString = this.color + " " + number;
+        String cardString = "(" + this.color + ", " + number + ")";
         return cardString;
     }
     
@@ -73,6 +73,36 @@ public class Card {
     }
     
     /**
+     * Tests equality.
+     *
+     * @param obj  The other object to compare with this.
+     * @return  true if they are the same card, false otherwise.
+     */
+    public boolean equals(Object obj) {
+        try {
+            Card otherCard = (Card) obj;
+            return this.equals(otherCard);
+        } catch (ClassCastException e) {
+            return false;
+        }
+    }
+    
+    @Override
+    public int compareTo(Card otherCard) {
+        if (this.number > otherCard.number) {
+            return 1;
+        } else if (this.number < otherCard.number) {
+            return -1;
+        } else {
+            //the two numbers are equal
+            if (this.color.equals(otherCard.color)) {
+                return 0;
+            } else if (
+        }
+    }
+    
+    
+    /**
      * Main method for testing.
      *
      * @param args  Strings from the command line.
@@ -87,6 +117,18 @@ public class Card {
         } catch (IllegalArgumentException e) {
             System.out.println("Mauve broke things, good!");
         }
+        
+        Card red7 = new Card("Red", 7);
+        Card yellow3 = new Card("Yellow", 3);
+        
+        System.out.println("Does Red 7 equal Yellow 3?  " + red7.equals(yellow3));
+        System.out.println("Does Red 7 equal Red 7?  " + red7.equals(testCard));
+        
+        ArrayList<Card> cards = new ArrayList<Card>();
+        cards.add(red7);
+        
+        System.out.println("Is Red 7 in the list?  (should be true)  " + cards.contains(testCard));
+        
     }
 
 } // end of Card.java
