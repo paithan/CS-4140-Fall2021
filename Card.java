@@ -1,11 +1,12 @@
 import java.util.*;
+import java.lang.*;
 
 /**
  * Models a single Red 7 card.
  *
  * @author CS 4140 Fall 2021.
  */
-public class Card {
+public class Card implements Comparable<Card> {
 
     //the color of the card
     private String color;
@@ -97,7 +98,12 @@ public class Card {
             //the two numbers are equal
             if (this.color.equals(otherCard.color)) {
                 return 0;
-            } else if (
+            } else if (this.color.equals("Red") || (this.color.equals("Yellow") && otherCard.color.equals("Violet"))) {
+                //our card is better
+                return 1;
+            } else {
+                return -1;
+            }
         }
     }
     
@@ -120,6 +126,7 @@ public class Card {
         
         Card red7 = new Card("Red", 7);
         Card yellow3 = new Card("Yellow", 3);
+        Card violet3 = new Card("Violet", 3);
         
         System.out.println("Does Red 7 equal Yellow 3?  " + red7.equals(yellow3));
         System.out.println("Does Red 7 equal Red 7?  " + red7.equals(testCard));
@@ -128,6 +135,14 @@ public class Card {
         cards.add(red7);
         
         System.out.println("Is Red 7 in the list?  (should be true)  " + cards.contains(testCard));
+        
+        System.out.println("How does Red 7 compare to Red 7?  (should be 0) " + red7.compareTo(testCard));
+        System.out.println("How does Red 7 compare to Red 7?  (should be 0) " + red7.compareTo(red7));
+        System.out.println("How does Red 7 compare to Yellow 3?  (should be 1) " + red7.compareTo(yellow3));
+        System.out.println("How does Yellow 3 compare to Red 7?  (should be -1) " + yellow3.compareTo(red7));
+        System.out.println("How does Yellow 3 compare to Violet 3?  (should be 1) " + yellow3.compareTo(violet3));
+        
+        
         
     }
 
