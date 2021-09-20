@@ -9,7 +9,7 @@ import java.lang.*;
 public class Card implements Comparable<Card> {
 
     //the color of the card
-    private String color;
+    private CardColor color;
     
     //the number of the card
     private int number;
@@ -23,24 +23,19 @@ public class Card implements Comparable<Card> {
      * @param color The color of the card.
      * @param number The number of the card.
      */
-    public Card(String color, int number) {
+    public Card(CardColor color, int number) {
         if ((number > 7) || (number < 1)) {
             //an illegal number
             throw new IllegalArgumentException("number needs to be between 1 and 7.  Tried: " + number);
         }
         this.number = number;
-        List<String> legalColors = Arrays.asList(this.colors);
-        if (legalColors.contains(color)) {
-            this.color = color;
-        } else {
-            throw new IllegalArgumentException("Illegal color: " + color);
-        }
+        this.color = color;
     }
     
     
     @Override
     public String toString() {
-        String cardString = "(" + this.color + ", " + number + ")";
+        String cardString = "(" + this.color.toString() + ", " + number + ")";
         return cardString;
     }
     
@@ -50,7 +45,7 @@ public class Card implements Comparable<Card> {
      *
      * @return  The color of this card.
      */
-    public String getColor() {
+    public CardColor getColor() {
         return this.color;
     }
     
@@ -70,7 +65,7 @@ public class Card implements Comparable<Card> {
      * @return  true if they are the same card, false otherwise.
      */
     public boolean equals(Card otherCard) {
-        return this.color.equals(otherCard.color) && this.number == otherCard.number;
+        return (this.color.compareTo(otherCard.color) == 0) && this.number == otherCard.number;
     }
     
     /**
@@ -90,20 +85,10 @@ public class Card implements Comparable<Card> {
     
     @Override
     public int compareTo(Card otherCard) {
-        if (this.number > otherCard.number) {
-            return 1;
-        } else if (this.number < otherCard.number) {
-            return -1;
+        if (this.number != otherCard.number) {
+            return this.number - otherCard.number;
         } else {
-            //the two numbers are equal
-            if (this.color.equals(otherCard.color)) {
-                return 0;
-            } else if (this.color.equals("Red") || (this.color.equals("Yellow") && otherCard.color.equals("Violet"))) {
-                //our card is better
-                return 1;
-            } else {
-                return -1;
-            }
+            return this.color.compareTo(otherCard.color);
         }
     }
     
@@ -114,34 +99,55 @@ public class Card implements Comparable<Card> {
      * @param args  Strings from the command line.
      */
     public static void main(String[] args) {
-        Card testCard = new Card("Red", 7);
+        CardColor red = new CardColor.Red();
+        CardColor yellow = new CardColor.Yellow();
+        CardColor violet = new CardColor.Violet();
+        Card testCard = new Card(red, 7);
         System.out.println(testCard);
         
+        /*
         try {
             Card mauve = new Card("Mauve", 8);
             System.out.println(mauve);
         } catch (IllegalArgumentException e) {
             System.out.println("Mauve broke things, good!");
-        }
+        }*/
         
-        Card red7 = new Card("Red", 7);
-        Card yellow3 = new Card("Yellow", 3);
-        Card violet3 = new Card("Violet", 3);
+        Card red7 = new Card(red, 7);
+        Card yellow3 = new Card(yellow, 3);
+        Card violet3 = new Card(violet, 3);
         
         System.out.println("Does Red 7 equal Yellow 3?  " + red7.equals(yellow3));
         System.out.println("Does Red 7 equal Red 7?  " + red7.equals(testCard));
         
         ArrayList<Card> cards = new ArrayList<Card>();
         cards.add(red7);
+        cards.add(violet3);
+        cards.add(yellow3);
+        cards.add(new Card(red, 6));
+        cards.add(new Card(yellow, 7));
+        cards.add(new Card(violet, 6));
         
         System.out.println("Is Red 7 in the list?  (should be true)  " + cards.contains(testCard));
         
         System.out.println("How does Red 7 compare to Red 7?  (should be 0) " + red7.compareTo(testCard));
         System.out.println("How does Red 7 compare to Red 7?  (should be 0) " + red7.compareTo(red7));
-        System.out.println("How does Red 7 compare to Yellow 3?  (should be 1) " + red7.compareTo(yellow3));
-        System.out.println("How does Yellow 3 compare to Red 7?  (should be -1) " + yellow3.compareTo(red7));
-        System.out.println("How does Yellow 3 compare to Violet 3?  (should be 1) " + yellow3.compareTo(violet3));
+        System.out.println("How does Red 7 compare to Yellow 3?  (should be positive) " + red7.compareTo(yellow3));
+        System.out.println("How does Yellow 3 compare to Red 7?  (should be negative) " + yellow3.compareTo(red7));
+        System.out.println("How does Yellow 3 compare to Violet 3?  (should be positive) " + yellow3.compareTo(violet3));
         
+        
+        System.out.println("List of cards: " + cards);
+        Set<Card> cardSet = new TreeSet<Card>();
+        cardSet.addAll(cards);
+        System.out.println(cardSet);
+        
+        /*
+        Card[] cardArray = cards.toArray(new Card[0]);
+        Arrays.sort(cardArray);
+        for (int i = 0; i < cardArray.length; i++) {
+            System.out.print(
+        }*/
         
         
     }

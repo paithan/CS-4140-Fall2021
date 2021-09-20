@@ -8,10 +8,12 @@ import java.lang.*;
 public abstract class CardColor implements Comparable<CardColor> {
 
     @Override
-    public abstract int compareTo(CardColor other);
+    public int compareTo(CardColor other) {
+        return this.getColorRank() - other.getColorRank();
+    }
     
     //returns the rank of the color
-    private abstract int getColorRank();
+    protected abstract int getColorRank();
 
     /**
      * Returns a string representation of this color.
@@ -25,7 +27,12 @@ public abstract class CardColor implements Comparable<CardColor> {
      */
     public static void main(String[] args) {
         CardColor red = new Red();
+        CardColor yellow = new Yellow();
+        CardColor violet = new Violet();
         System.out.println(red.toString());
+        System.out.println("How does red compare to yellow?  (Should be positive integer) " + red.compareTo(yellow));
+        System.out.println("How does violet compare to red?  (Should be a negative integer) " + violet.compareTo(red));
+        System.out.println("How does yellow compare to itself?  (Should be zero)  " + yellow.compareTo(yellow));
     }
     
     /**
@@ -37,13 +44,8 @@ public abstract class CardColor implements Comparable<CardColor> {
         
         }
         
-        private int getColorRank() {
+        protected int getColorRank() {
             return 7;
-        }
-        
-        @Override
-        public int compareTo(CardColor other) {
-            return this.getColorRank() - other.getColorRank();
         }
         
         @Override
@@ -62,12 +64,7 @@ public abstract class CardColor implements Comparable<CardColor> {
         
         }
         
-        @Override
-        public int compareTo(CardColor other) {
-            return 1;
-        }
-        
-        private int getColorRank() {
+        protected int getColorRank() {
             return 5;
         }
         
@@ -87,12 +84,7 @@ public abstract class CardColor implements Comparable<CardColor> {
         
         }
         
-        @Override
-        public int compareTo(CardColor other) {
-            return 1;
-        }
-        
-        private int getColorRank() {
+        protected int getColorRank() {
             return 1;
         }
         
