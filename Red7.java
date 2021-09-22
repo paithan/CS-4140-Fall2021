@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Collections;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,17 +18,28 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
- * An implementation of the game Red7, by Asmadi Games.  Only includes two card colors: violet and indigo.  Thanks to Asmadi Games for granting me permission to use their game rules for educational purposes.  This implementation is intended to be terrible, and will be updated during the semester in a Software Engineering course.
+ * An implementation of the game Red7, by Asmadi Games.  Thanks to Asmadi Games for granting me permission to use their game rules for educational purposes.  
  *
  * @author Kyle Burke <kwburke@plymouth.edu>
  */
 public class Red7 extends Application {
+
+
+    //the deck of cards in this game
+    private ArrayList<Card> deck;
     
     /**
      * Main method to run the game.
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    /**
+     * Deals a card from the deck.
+     */
+    public Card dealCard() {
+        return this.deck.remove(0);
     }
     
     /**
@@ -153,6 +165,11 @@ public class Red7 extends Application {
         
         return cardPane;
     }
+    
+    /**
+     * Determines whether the current player is winning.
+     */
+    
     
     /**
      * Determines whether the current player is winning.
@@ -443,6 +460,24 @@ public class Red7 extends Application {
     
         primaryStage.setTitle("Red 7");
         
+        //build the deck of cards
+        this.deck = new ArrayList<Card>();
+        
+        
+        //add the cards to the deck
+        for (int cardNumber = 1; cardNumber <= 7; cardNumber++) {
+            deck.add(new Card(new CardColor.Red(), cardNumber));
+            deck.add(new Card(new CardColor.Yellow(), cardNumber));
+            deck.add(new Card(new CardColor.Violet(), cardNumber));
+        }
+        Collections.shuffle(deck);
+        
+        System.out.println("deck: " + deck);
+        
+        
+        
+        
+        
         //cards that are still in the deck
         boolean[] violetsInDeck = new boolean[] {true, true, true, true, true, true, true};
         boolean[] yellowsInDeck = new boolean[] {true, true, true, true, true, true, true};
@@ -457,12 +492,18 @@ public class Red7 extends Application {
         ArrayList<String> playerAPaletteColors = new ArrayList<String>();
         ArrayList<Integer> playerAPaletteNumbers = new ArrayList<Integer>();
         
+        ArrayList<Card> playerAHand = new ArrayList<Card>();
+        ArrayList<Card> playerAPalette = new ArrayList<Card>();
+        
+        
         //deal cards to playerA
         //1 to the palette
         dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerAPaletteColors, playerAPaletteNumbers);
+        playerAPalette.add(dealCard());
         //4 to the hand
         for (int i = 0; i < 4; i++) {
             dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerAHandColors, playerAHandNumbers);
+            playerAHand.add(dealCard());
         }
         
         //playerB setup
@@ -471,12 +512,17 @@ public class Red7 extends Application {
         ArrayList<String> playerBPaletteColors = new ArrayList<String>();
         ArrayList<Integer> playerBPaletteNumbers = new ArrayList<Integer>();
         
+        ArrayList<Card> playerBHand = new ArrayList<Card>();
+        ArrayList<Card> playerBPalette = new ArrayList<Card>();
+        
         //deal cards to playerB
         //1 to the palette
         dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerBPaletteColors, playerBPaletteNumbers);
+        playerBPalette.add(dealCard());
         //4 to the hand
         for (int i = 0; i < 4; i++) {
             dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerBHandColors, playerBHandNumbers);
+            playerBHand.add(dealCard());
         }
         
         //set the first player based on who is winning.

@@ -126,7 +126,7 @@ public class Card implements Comparable<Card> {
         cards.add(yellow3);
         cards.add(new Card(red, 6));
         cards.add(new Card(yellow, 7));
-        cards.add(new Card(violet, 6));
+        cards.add(new Card(violet, 5));
         
         System.out.println("Is Red 7 in the list?  (should be true)  " + cards.contains(testCard));
         
