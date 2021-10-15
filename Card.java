@@ -6,16 +6,17 @@ import java.lang.*;
  *
  * @author CS 4140 Fall 2021.
  */
-public class Card implements Comparable<Card> {
+public abstract class Card implements Comparable<Card> {
 
-    //the color of the card
-    private CardColor color;
-    
+
     //the number of the card
     private int number;
     
+    //the color of the card
+    private CardColor color;
+    
     //legal colors
-    private String[] colors = new String[]{"Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet"};
+    //private String[] colors = new String[]{"Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet"};
     
     /**
      * Creates an instance of a Card.
@@ -23,20 +24,30 @@ public class Card implements Comparable<Card> {
      * @param color The color of the card.
      * @param number The number of the card.
      */
-    public Card(CardColor color, int number) {
+    protected Card(CardColor color, int number) {
+        this.number = number;
+        this.color = color;
+        /*
         if ((number > 7) || (number < 1)) {
             //an illegal number
             throw new IllegalArgumentException("number needs to be between 1 and 7.  Tried: " + number);
         }
-        this.number = number;
-        this.color = color;
+        */
     }
     
     
-    @Override
-    public String toString() {
-        String cardString = "(" + this.color.toString() + ", " + number + ")";
-        return cardString;
+    /**
+     * Creates a Card object.
+     */
+    public static Card createCard(CardColor color, int number) {
+        return new RealCard(color, number);
+    }
+    
+    /**
+     * Creates a card that acts as an empty card?  a null card?
+     */
+    public static Card createNullCard() {
+        return new NullCard();
     }
     
     
@@ -65,7 +76,8 @@ public class Card implements Comparable<Card> {
      * @return  true if they are the same card, false otherwise.
      */
     public boolean equals(Card otherCard) {
-        return (this.color.compareTo(otherCard.color) == 0) && this.number == otherCard.number;
+        //return (this.getColor().compareTo(otherCard.getColor()) == 0) && this.getNumber() == otherCard.getNumber();
+        return (this.compareTo(otherCard) == 0);
     }
     
     /**
@@ -85,10 +97,10 @@ public class Card implements Comparable<Card> {
     
     @Override
     public int compareTo(Card otherCard) {
-        if (this.number != otherCard.number) {
-            return this.number - otherCard.number;
+        if (this.getNumber() != otherCard.getNumber()) {
+            return this.getNumber() - otherCard.getNumber();
         } else {
-            return this.color.compareTo(otherCard.color);
+            return this.getColor().compareTo(otherCard.getColor());
         }
     }
     
@@ -102,20 +114,20 @@ public class Card implements Comparable<Card> {
         CardColor red = new CardColor.Red();
         CardColor yellow = new CardColor.Yellow();
         CardColor violet = new CardColor.Violet();
-        Card testCard = new Card(red, 7);
+        Card testCard = new RealCard(red, 7);
         System.out.println(testCard);
         
         /*
         try {
-            Card mauve = new Card("Mauve", 8);
+            Card mauve = new RealCard("Mauve", 8);
             System.out.println(mauve);
         } catch (IllegalArgumentException e) {
             System.out.println("Mauve broke things, good!");
         }*/
         
-        Card red7 = new Card(red, 7);
-        Card yellow3 = new Card(yellow, 3);
-        Card violet3 = new Card(violet, 3);
+        Card red7 = new RealCard(red, 7);
+        Card yellow3 = new RealCard(yellow, 3);
+        Card violet3 = new RealCard(violet, 3);
         
         System.out.println("Does Red 7 equal Yellow 3?  " + red7.equals(yellow3));
         System.out.println("Does Red 7 equal Red 7?  " + red7.equals(testCard));
@@ -124,9 +136,9 @@ public class Card implements Comparable<Card> {
         cards.add(red7);
         cards.add(violet3);
         cards.add(yellow3);
-        cards.add(new Card(red, 6));
-        cards.add(new Card(yellow, 7));
-        cards.add(new Card(violet, 5));
+        cards.add(new RealCard(red, 6));
+        cards.add(new RealCard(yellow, 7));
+        cards.add(new RealCard(violet, 5));
         
         System.out.println("Is Red 7 in the list?  (should be true)  " + cards.contains(testCard));
         
@@ -143,14 +155,73 @@ public class Card implements Comparable<Card> {
         System.out.println(cardSet);
         
         /*
-        Card[] cardArray = cards.toArray(new Card[0]);
+        Card[] cardArray = cards.toArray(new RealCard[0]);
         Arrays.sort(cardArray);
         for (int i = 0; i < cardArray.length; i++) {
             System.out.print(
         }*/
         
-        
     }
+    
+    /**
+     * Implements a card representing no card at all.
+     */
+    private static class NullCard extends Card {
+        
+        /**
+         * Creates a non-existent card.
+         */
+        public NullCard() {
+            super(new CardColor.Violet(), 0);
+            /*
+            this.number = 0;
+            this.color = new CardColor.Violet();
+            */
+        }
+        
+        @Override
+        public String toString() {
+            return "";
+        }
+        
+        /*
+        @Override
+        public int getNumber() {
+            return 0;
+        }*/
+    
+    } //end of NullCard
+    
+    /**
+     * Implements a real Red7 card.
+     */
+    private static class RealCard extends Card {
+
+        /**
+         * Creates a new Red7 card.
+         */
+        public RealCard(CardColor color, int number) {
+            super(color, number);
+            if ((number > 7) || (number < 1)) {
+                //an illegal number
+                throw new IllegalArgumentException("number needs to be between 1 and 7.  Tried: " + number);
+            }
+            /*
+            this.number = number;
+            this.color = color;
+            */
+        }
+    
+        @Override
+        public String toString() {
+            String cardString = "(" + this.getColor().toString() + ", " + this.getNumber() + ")";
+            return cardString;
+        }
+        
+        
+    
+    } //end of RealCard
+    
 
 } // end of Card.java
 

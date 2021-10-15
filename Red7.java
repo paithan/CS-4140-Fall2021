@@ -167,9 +167,12 @@ public class Red7 extends Application {
     }
     
     /**
-     * Determines whether the current player is winning.
+     * Determines which player is winning.
      */
+    public static int whoIsWinning(CardColor canvasColor, ArrayList<Card> playerAPalette, ArrayList<Card> playerBPalette) {
+        return canvasColor.whoIsWinning(playerAPalette, playerBPalette);
     
+    }
     
     /**
      * Determines whether the current player is winning.
@@ -459,6 +462,7 @@ public class Red7 extends Application {
     public void start(Stage primaryStage) {
     
         primaryStage.setTitle("Red 7");
+        primaryStage.setFullScreen(true);
         
         //build the deck of cards
         this.deck = new ArrayList<Card>();
@@ -466,9 +470,9 @@ public class Red7 extends Application {
         
         //add the cards to the deck
         for (int cardNumber = 1; cardNumber <= 7; cardNumber++) {
-            deck.add(new Card(new CardColor.Red(), cardNumber));
-            deck.add(new Card(new CardColor.Yellow(), cardNumber));
-            deck.add(new Card(new CardColor.Violet(), cardNumber));
+            deck.add(Card.createCard(new CardColor.Red(), cardNumber));
+            deck.add(Card.createCard(new CardColor.Yellow(), cardNumber));
+            deck.add(Card.createCard(new CardColor.Violet(), cardNumber));
         }
         Collections.shuffle(deck);
         
@@ -532,6 +536,8 @@ public class Red7 extends Application {
         } else {
             currentPlayer = 0;
         }
+        
+        
         
         String[] players = new String[] {"A", "B"};
         String player = players[currentPlayer];
