@@ -1,5 +1,6 @@
 import java.lang.*;
 import java.util.*;
+import javafx.scene.paint.Color;
 
 /**
  * Represents a single color from the game Red7.
@@ -15,6 +16,18 @@ public abstract class CardColor implements Comparable<CardColor> {
     
     //returns the rank of the color
     protected abstract int getColorRank();
+    
+    /**
+     * Returns a javafx Color for this.
+     * @return  A GUI color for this object.
+     */
+    public abstract Color getFXColor();
+    
+    /**
+     * Returns a javafx Color for text on main color.
+     * @return  A GUI color for text for this object.
+     */
+    public abstract Color getFXTextColor();
 
     /**
      * Returns a string representation of this color.
@@ -59,6 +72,16 @@ public abstract class CardColor implements Comparable<CardColor> {
             return "Red";
         }
         
+        @Override
+        public Color getFXColor(){
+            return Color.RED;
+        }
+        
+        @Override
+        public Color getFXTextColor(){
+            return Color.WHITE;
+        }
+        
         /**
          * Returns the index of the palette with the highest card.
          */
@@ -70,6 +93,9 @@ public abstract class CardColor implements Comparable<CardColor> {
             });
             Card maxACard = playerAPalette.get(playerAPalette.size() - 1);
             */
+            System.out.println("Red's whoIsWinning... comparing palettes!");
+            System.out.println("playerAPalette: " + playerAPalette);
+            System.out.println("playerBPalette: " + playerBPalette);
             Card maxACard = playerAPalette.get(0);
             for (Card card : playerAPalette) {
                 if (card.compareTo(maxACard) > 0) {
@@ -109,10 +135,21 @@ public abstract class CardColor implements Comparable<CardColor> {
             return "Yellow";
         }
         
+        @Override
+        public Color getFXColor(){
+            return Color.YELLOW;
+        }
+        
+        @Override
+        public Color getFXTextColor(){
+            return Color.BLACK;
+        }
+        
         /**
          * Returns the index of the palette with more of one color.
          */
         public int whoIsWinning(ArrayList<Card> playerAPalette, ArrayList<Card> playerBPalette) {
+            System.out.println("Inside yellow's version of whoIsWinning.");
             //quantities of each color in the palettes
             //From Red (index 0) to Violet (index 6)
             int[] playerAPaletteColorQuantities = new int[] {0, 0, 0, 0, 0, 0, 0};
@@ -206,6 +243,16 @@ public abstract class CardColor implements Comparable<CardColor> {
         @Override
         public String toString() {
             return "Violet";
+        }
+        
+        @Override
+        public Color getFXColor(){
+            return Color.VIOLET;
+        }
+        
+        @Override
+        public Color getFXTextColor(){
+            return Color.WHITE;
         }
     
     } //end of Violet

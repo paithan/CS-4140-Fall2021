@@ -1,5 +1,10 @@
 import java.util.*;
 import java.lang.*;
+import javafx.scene.paint.Color;
+import javafx.scene.*;
+import javafx.scene.layout.*;
+import javafx.scene.shape.*;
+import javafx.scene.text.*;
 
 /**
  * Models a single Red 7 card.
@@ -61,12 +66,50 @@ public abstract class Card implements Comparable<Card> {
     }
     
     /**
+     * Gets the javaFX Color object.
+     *
+     * @return  The color of this card.
+     */
+    public Color getFXColor() {
+        return this.color.getFXColor();
+    }
+    
+    /**
+     * Gets the javaFX Color object for text on this card.
+     *
+     * @return  The color for text on this card.
+     */
+    public Color getFXTextColor() {
+        return this.color.getFXTextColor();
+    }
+    
+    /**
      * Gets the number.
      *
      * @return The number value of this card.
      */
     public int getNumber() {
         return this.number;
+    }
+    
+    /**
+     * Returns a StackPane with the graphics for a single card.
+     */
+    public Node getFXGraphics(int height) {
+        //return getCardGraphics(card.getColor().toString(), card.getNumber(), height);
+        int STANDARD_HEIGHT = 175;
+        double scale = height / (double) STANDARD_HEIGHT;
+        StackPane cardPane = new StackPane();
+        
+        //add the layers to the cardPane
+        Rectangle cardBase = new Rectangle(125 * scale, 175 * scale, this.getFXColor());
+        cardPane.getChildren().add(cardBase);
+        Text cardNumberText = new Text(String.valueOf(this.getNumber()));
+        cardNumberText.setFont(Font.font("System", FontWeight.BOLD, 50.0 * scale));
+        cardNumberText.setFill(this.getFXTextColor());
+        cardPane.getChildren().add(cardNumberText);
+        
+        return cardPane;
     }
     
     /**
@@ -97,9 +140,14 @@ public abstract class Card implements Comparable<Card> {
     
     @Override
     public int compareTo(Card otherCard) {
+        System.out.println("Comparing " + this + " to " + otherCard + "!");
         if (this.getNumber() != otherCard.getNumber()) {
+            int difference = this.getNumber() - otherCard.getNumber();
+            System.out.println("First case!  difference: " + difference);
             return this.getNumber() - otherCard.getNumber();
         } else {
+            int difference = this.getColor().compareTo(otherCard.getColor());
+            System.out.println("Second case!  difference: " + difference);
             return this.getColor().compareTo(otherCard.getColor());
         }
     }

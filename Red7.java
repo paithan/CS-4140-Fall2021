@@ -28,6 +28,9 @@ public class Red7 extends Application {
     //the deck of cards in this game
     private ArrayList<Card> deck;
     
+    //the number of cards in each player's hand at the start
+    private static final int STARTING_HAND_SIZE = 7;
+    
     /**
      * Main method to run the game.
      */
@@ -83,6 +86,118 @@ public class Red7 extends Application {
         }
     }
     
+    
+    /**
+     * Displays all part of the current game state.
+     */
+    public void displayAll(Stage stage, CardColor canvas, Player playerA, Player playerB) {
+        int cardHeight = 100;
+        VBox board = new VBox();
+        board.setSpacing(2);
+        
+        board.getChildren().add(playerA.getFXGraphics(cardHeight, false));
+        
+        /*
+        //player A Hand
+        Text handText = new Text("Player A's Hand");
+        board.getChildren().add(handText);
+        board.getChildren().add(getCardRow(handA));
+        
+        //player A Palette
+        board.getChildren().add(new Text("Player A's Palette:"));
+        board.getChildren().add(getCardRow(paletteA));*/
+        
+        //the canvas
+        board.getChildren().add(new Text("Canvas:"));
+        Rectangle canvasRectangle = new Rectangle(175, 125, canvas.getFXColor());
+        /*
+        if (canvasColor.equals("Red")) {
+            canvasRectangle = new Rectangle(175, 125, Color.RED);
+        } else if (canvasColor.equals("Yellow")) {
+            canvasRectangle = new Rectangle(175, 125, Color.YELLOW);
+        } else {
+            canvasRectangle = new Rectangle(175, 125, Color.VIOLET);
+        }*/
+        board.getChildren().add(canvasRectangle);
+        
+        
+        board.getChildren().add(playerB.getFXGraphics(cardHeight, true));
+        
+        /*
+        //player B Palette
+        board.getChildren().add(new Text("Player B's Palette:"));
+        board.getChildren().add(getCardRow(paletteB));
+        
+        //player B Hand
+        board.getChildren().add(new Text("Player B's Hand"));
+        board.getChildren().add(getCardRow(handB));
+        */
+        
+        //set up the scene and make sure it's visible
+        stage.setScene(new Scene(board));
+        stage.show();
+        stage.sizeToScene();
+    }
+    
+    /**
+     * Displays all the parts of the current game state.
+     */
+    public void displayAll(Stage stage, CardColor canvas, ArrayList<Card> paletteA, ArrayList<Card> paletteB, ArrayList<Card> handA, ArrayList<Card> handB) {
+        VBox board = new VBox();
+        board.setSpacing(2);
+        
+        //player A Hand
+        Text handText = new Text("Player A's Hand");
+        board.getChildren().add(handText);
+        board.getChildren().add(getCardRow(handA));
+        
+        //player A Palette
+        board.getChildren().add(new Text("Player A's Palette:"));
+        board.getChildren().add(getCardRow(paletteA));
+        
+        //the canvas
+        board.getChildren().add(new Text("Canvas:"));
+        Rectangle canvasRectangle = new Rectangle(175, 125, canvas.getFXColor());
+        /*
+        if (canvasColor.equals("Red")) {
+            canvasRectangle = new Rectangle(175, 125, Color.RED);
+        } else if (canvasColor.equals("Yellow")) {
+            canvasRectangle = new Rectangle(175, 125, Color.YELLOW);
+        } else {
+            canvasRectangle = new Rectangle(175, 125, Color.VIOLET);
+        }*/
+        board.getChildren().add(canvasRectangle);
+        
+        //player B Palette
+        board.getChildren().add(new Text("Player B's Palette:"));
+        board.getChildren().add(getCardRow(paletteB));
+        
+        //player B Hand
+        board.getChildren().add(new Text("Player B's Hand"));
+        board.getChildren().add(getCardRow(handB));
+        
+        //set up the scene and make sure it's visible
+        stage.setScene(new Scene(board));
+        stage.show();
+        stage.sizeToScene();
+    }
+    
+    /**
+     * Gets a HBox for a single row of cards.
+     */
+    public static HBox getCardRow(ArrayList<Card> cards) {
+        HBox cardsRow = new HBox();
+        //for (int i = 0; i < cards.size(); i++) {
+        for (Card card : cards) {
+            //String color = card.getColor().toString(); //TODO: we're here!
+            //int number = card.getNumber();
+            StackPane cardGraphics = getCardGraphics(card, 100);
+            cardsRow.getChildren().add(cardGraphics);
+        }
+        return cardsRow;
+    }
+        
+    
     /**
      * Displays the whole game state.
      */
@@ -131,31 +246,53 @@ public class Red7 extends Application {
     public static HBox getCardRow(ArrayList<String> colors, ArrayList<Integer> numbers) {
         HBox cardsRow = new HBox();
         for (int i = 0; i < colors.size(); i++) {
-            StackPane cardGraphics = getCardGraphics(colors.get(i), numbers.get(i));
+            StackPane cardGraphics = getCardGraphics(colors.get(i), numbers.get(i), 100);
             cardsRow.getChildren().add(cardGraphics);
         }
         return cardsRow;
+    }
+    
+    /**
+     * Gets a StackPane with the graphics for a single card.
+     */
+    public static StackPane getCardGraphics(Card card, int height) {
+        //return getCardGraphics(card.getColor().toString(), card.getNumber(), height);
+        int STANDARD_HEIGHT = 175;
+        double scale = height / (double) STANDARD_HEIGHT;
+        StackPane cardPane = new StackPane();
+        
+        //add the layers to the cardPane
+        Rectangle cardBase = new Rectangle(125 * scale, 175 * scale, card.getFXColor());
+        cardPane.getChildren().add(cardBase);
+        Text cardNumberText = new Text(String.valueOf(card.getNumber()));
+        cardNumberText.setFont(Font.font("System", FontWeight.BOLD, 50.0 * scale));
+        cardNumberText.setFill(card.getFXTextColor());
+        cardPane.getChildren().add(cardNumberText);
+        
+        return cardPane;
     }
     
     
     /**
      * Gets a StackPane with the graphics for a single card.
      */
-    public static StackPane getCardGraphics(String color, int number) {
+    public static StackPane getCardGraphics(String color, int number, int height) {
+        int STANDARD_HEIGHT= 175;
+        double scale = height / (double) STANDARD_HEIGHT;
         StackPane cardPane = new StackPane();
         
         //add the color as a background rectangle
-        Rectangle cardBase = new Rectangle(125, 175, Color.VIOLET);
+        Rectangle cardBase = new Rectangle(125 * scale, 175 * scale, Color.VIOLET);
         if (color.equals("Red")) {
-            cardBase = new Rectangle(125, 175, Color.RED);
+            cardBase = new Rectangle(125 * scale, 175 * scale, Color.RED);
         } else if (color.equals("Yellow")) {
-            cardBase = new Rectangle(125, 175, Color.YELLOW);
+            cardBase = new Rectangle(125 * scale, 175 * scale, Color.YELLOW);
         }
         cardPane.getChildren().add(cardBase);
         
         //now add the text above that
         Text cardNumberText = new Text("" + number);
-        cardNumberText.setFont(Font.font("System", FontWeight.BOLD, 50.0));
+        cardNumberText.setFont(Font.font("System", FontWeight.BOLD, 50.0 * scale));
         if (color.equals("Yellow")) {
             cardNumberText.setFill(Color.BLACK);
         } else {
@@ -489,6 +626,7 @@ public class Red7 extends Application {
         
         //canvas
         String canvasColor = "Red";
+        CardColor canvas = new CardColor.Red();
         
         //playerA setup
         ArrayList<String> playerAHandColors = new ArrayList<String>();
@@ -503,12 +641,14 @@ public class Red7 extends Application {
         //deal cards to playerA
         //1 to the palette
         dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerAPaletteColors, playerAPaletteNumbers);
-        playerAPalette.add(dealCard());
+        //playerAPalette.add(dealCard());
         //4 to the hand
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < STARTING_HAND_SIZE; i++) {
             dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerAHandColors, playerAHandNumbers);
             playerAHand.add(dealCard());
         }
+        
+        Player playerA = new Player("Player A", playerAHand, dealCard());
         
         //playerB setup
         ArrayList<String> playerBHandColors = new ArrayList<String>();
@@ -522,22 +662,30 @@ public class Red7 extends Application {
         //deal cards to playerB
         //1 to the palette
         dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerBPaletteColors, playerBPaletteNumbers);
-        playerBPalette.add(dealCard());
+        //playerBPalette.add(dealCard());
         //4 to the hand
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < STARTING_HAND_SIZE; i++) {
             dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerBHandColors, playerBHandNumbers);
             playerBHand.add(dealCard());
         }
         
+        Player playerB = new Player("Player B", playerBHand, dealCard());
+        
         //set the first player based on who is winning.
         int currentPlayer;
+        
+        //TODO: remove this conditional after the following method call works
         if (playerWinning(canvasColor, playerAPaletteColors, playerAPaletteNumbers, playerBPaletteColors, playerBPaletteNumbers)) {
             currentPlayer = 1;
         } else {
             currentPlayer = 0;
         }
         
+        int winning = canvas.whoIsWinning(playerA.getPalette(), playerB.getPalette());
+        System.out.println("I think player " + winning + " is winning.");
         
+        currentPlayer = 1 - winning;
+        System.out.println("That means player " + currentPlayer + " goes first!");
         
         String[] players = new String[] {"A", "B"};
         String player = players[currentPlayer];
@@ -547,7 +695,11 @@ public class Red7 extends Application {
         /* */
         while (true) {
         
-            displayAll(primaryStage, canvasColor, playerAPaletteColors, playerAPaletteNumbers, playerBPaletteColors, playerBPaletteNumbers, playerAHandColors, playerAHandNumbers, playerBHandColors, playerBHandNumbers);
+            //displayAll(primaryStage, canvasColor, playerAPaletteColors, playerAPaletteNumbers, playerBPaletteColors, playerBPaletteNumbers, playerAHandColors, playerAHandNumbers, playerBHandColors, playerBHandNumbers);
+            
+            //displayAll(primaryStage, canvas, playerAPalette, playerBPalette, playerAHand, playerBHand);
+            
+            displayAll(primaryStage, canvas, playerA, playerB);
             
             ArrayList<String> currentPlayerHandColors;
             ArrayList<Integer> currentPlayerHandNumbers;
