@@ -672,25 +672,27 @@ public class Red7 extends Application {
         Player playerB = new Player("Player B", playerBHand, dealCard());
         
         //set the first player based on who is winning.
-        int currentPlayer;
+        int currentPlayerIndex;
         
         //TODO: remove this conditional after the following method call works
+        /*
         if (playerWinning(canvasColor, playerAPaletteColors, playerAPaletteNumbers, playerBPaletteColors, playerBPaletteNumbers)) {
             currentPlayer = 1;
         } else {
             currentPlayer = 0;
         }
+        */
         
         int winning = canvas.whoIsWinning(playerA.getPalette(), playerB.getPalette());
         System.out.println("I think player " + winning + " is winning.");
         
-        currentPlayer = 1 - winning;
-        System.out.println("That means player " + currentPlayer + " goes first!");
+        currentPlayerIndex = 1 - winning;
+        System.out.println("That means player " + currentPlayerIndex + " goes first!");
         
-        String[] players = new String[] {"A", "B"};
-        String player = players[currentPlayer];
+        Player[] players = new Player[] {playerA, playerB};
+        Player currentPlayer = players[currentPlayerIndex];
         
-        System.out.println("Player " + player + " goes first!");
+        System.out.println("Player " + currentPlayer.getName() + " goes first!");
         
         /* */
         while (true) {
@@ -699,8 +701,13 @@ public class Red7 extends Application {
             
             //displayAll(primaryStage, canvas, playerAPalette, playerBPalette, playerAHand, playerBHand);
             
-            displayAll(primaryStage, canvas, playerA, playerB);
+            displayAll(primaryStage, canvas, players[0], players[1]);
             
+            
+            currentPlayer = players[currentPlayerIndex];
+            Player opponentPlayer = players[1-currentPlayerIndex];
+            
+            /*
             ArrayList<String> currentPlayerHandColors;
             ArrayList<Integer> currentPlayerHandNumbers;
             ArrayList<String> currentPlayerPaletteColors;
@@ -727,26 +734,26 @@ public class Red7 extends Application {
                 opponentHandNumbers = playerAHandNumbers;
                 opponentPaletteColors = playerAPaletteColors;
                 opponentPaletteNumbers = playerAPaletteNumbers;
-            }
+            }*/
             
-            if (currentPlayerHandColors.size() == 0) {
+            if (currentPlayer.getHand().size() == 0) {
                 break;
             }
             
             ArrayList<String> playChoices = new ArrayList<String>();
             playChoices.add("Play only to Palette");
             playChoices.add("Play only to Canvas");
-            if (currentPlayerHandColors.size() > 1) {
+            if (currentPlayer.getHand().size() > 1) {
                 playChoices.add("Play to Palette and Canvas");
             }
             playChoices.add("Concede");
             ArrayList<String> choiceChosen = new ArrayList<String>();
             ChoiceDialog<String> dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
-            dialog.setTitle("Player " + player + "'s turn.");
-            dialog.setHeaderText("Player " + player + ", Choose your move.");
+            dialog.setTitle("Player " + currentPlayer.getName() + "'s turn.");
+            dialog.setHeaderText("Player " + currentPlayer.getName() + ", Choose your move.");
             dialog.setContentText("Options:");
         
-            System.out.println("Player " + player + "'s turn...");
+            System.out.println("Player " + currentPlayer.getName() + "'s turn...");
             while (true) {
                 dialog.showAndWait().ifPresent( (response) -> {
                     choiceChosen.add(response);
@@ -757,11 +764,17 @@ public class Red7 extends Application {
             }
             String choice = choiceChosen.get(0);
             
+            Player playerAfterMove = currentPlayer;
+            CardColor newCanvasColor = canvas;
+            
+            //TODO: we'll be able to remove these array lists!  Woooooo
+            /*
             ArrayList<String> newPlayerPaletteColors = cloneAL(currentPlayerPaletteColors);
             ArrayList<Integer> newPlayerPaletteNumbers = cloneAL(currentPlayerPaletteNumbers);
             ArrayList<String> newPlayerHandColors = cloneAL(currentPlayerHandColors);
             ArrayList<Integer> newPlayerHandNumbers = cloneAL(currentPlayerHandNumbers);
-            String newCanvasColor = canvasColor;
+            */
+            //String newCanvasColor = canvasColor;
             boolean playToPalette = false;
             boolean playToCanvas = false;
             if (choice.equals("Play only to Palette")) {
@@ -779,14 +792,21 @@ public class Red7 extends Application {
             if (playToPalette) {
                 playChoices.clear();
                 choiceChosen.clear();
-                for (int i = 0; i < currentPlayerHandColors.size(); i++) {
+                for (int i = 0; i < currentPlayer.getHand().size(); i++) {
+                    Card card = currentPlayer.getHand().get(i);
+                    String cardString = card.toString();
+                    playChoices.add(i + ": Play " + cardString + " to the palette.");
+                    /*
+                    Color cardColor = card.getColor();
                     String color = currentPlayerHandColors.get(i);
                     int number = currentPlayerHandNumbers.get(i);
+                    //int number = currentPlayerHandNumbers.get(i);
                     playChoices.add(i + ": Play " + color + " " + number + " to the palette.");
+                    */
                 }
                 dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
                 dialog.setTitle("Palette card");
-                dialog.setHeaderText("Player " + player + ", pick your card");
+                dialog.setHeaderText("Player " + currentPlayer.getName() + ", pick your card");
                 dialog.setContentText("Options:");
                 while (true) {
                     dialog.showAndWait().ifPresent( (response) -> {
@@ -803,25 +823,34 @@ public class Red7 extends Application {
                 } catch (Exception e) {
                     System.err.print("This shouldn't happen!");
                 }
+                Card cardToPalette = currentPlayer.getHand().get(cardIndex);
+                playerAfterMove = playerAfterMove.moveToPalette(cardToPalette);
+                
+                /*
                 String color = currentPlayerHandColors.get(cardIndex);
                 int number = currentPlayerHandNumbers.get(cardIndex);
                 newPlayerHandColors.remove(cardIndex);
                 newPlayerHandNumbers.remove(cardIndex);
                 newPlayerPaletteColors.add(color);
                 newPlayerPaletteNumbers.add(number);
+                */
             }
             
             if (playToCanvas) {
                 playChoices.clear();
                 choiceChosen.clear();
-                for (int i = 0; i < newPlayerHandColors.size(); i++) {
+                for (int i = 0; i < playerAfterMove.getHand().size(); i++) {
+                    Card card = playerAfterMove.getHand().get(i);
+                    playChoices.add(i + ": Play " + card + " to the canvas.");
+                    /*
                     String color = newPlayerHandColors.get(i);
                     int number = newPlayerHandNumbers.get(i);
                     playChoices.add(i + ": Play " + color + " " + number + " to the canvas.");
+                    */
                 }
                 dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
                 dialog.setTitle("Canvas card");
-                dialog.setHeaderText("Player " + player + ", pick your card");
+                dialog.setHeaderText("Player " + playerAfterMove.getName() + ", pick your card");
                 dialog.setContentText("Options:");
                 while (true) {
                     dialog.showAndWait().ifPresent( (response) -> {
@@ -838,13 +867,27 @@ public class Red7 extends Application {
                 } catch (Exception e) {
                     System.err.print("This shouldn't happen!");
                 }
+                Card cardToCanvas = playerAfterMove.getHand().get(cardIndex);
+                playerAfterMove = playerAfterMove.moveToCanvas(cardToCanvas);
+                newCanvasColor = cardToCanvas.getColor();
+                
+                /*
                 String color = newPlayerHandColors.get(cardIndex);
                 int number = newPlayerHandNumbers.get(cardIndex);
                 newPlayerHandColors.remove(cardIndex);
                 newPlayerHandNumbers.remove(cardIndex);
-                newCanvasColor = color;
+                newCanvasColor = color;*/
             }
-                
+            if (newCanvasColor.whoIsWinning(playerAfterMove.getPalette(), opponentPlayer.getPalette()) == 0) {
+                System.out.println("That move works!");
+                canvas = newCanvasColor;
+                players[currentPlayerIndex] = playerAfterMove;
+                currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+            } else {
+                System.out.println("That move doesn't work!");
+            }
+            
+            /*
             if (playerWinning(newCanvasColor, newPlayerPaletteColors, newPlayerPaletteNumbers, opponentPaletteColors, opponentPaletteNumbers)) {
                 //great!  Apply the move!
                 System.out.println("That move works!");
@@ -859,14 +902,14 @@ public class Red7 extends Application {
                 player = players[currentPlayer];
             } else {
                 System.out.println("That move doesn't work!");
-            }
+            }*/
             
             
             
         }
         /* */
         
-        System.out.println("Player " + player + " loses!");
+        System.out.println("Player " + currentPlayer.getName() + " loses!");
         
         
     }
