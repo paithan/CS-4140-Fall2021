@@ -28,9 +28,6 @@ public class Red7 extends Application {
     //the deck of cards in this game
     private ArrayList<Card> deck;
     
-    //the number of cards in each player's hand at the start
-    private static final int STARTING_HAND_SIZE = 7;
-    
     /**
      * Main method to run the game.
      */
@@ -45,47 +42,6 @@ public class Red7 extends Application {
         return this.deck.remove(0);
     }
     
-    /**
-     * Removes a random card from the deck and puts it in the appropriate collection.
-     */
-    public static void dealCard(boolean[] redsInDeck, boolean[] yellowsInDeck, boolean[] violetsInDeck, ArrayList<String> targetColors, ArrayList<Integer> targetNumbers) {
-        
-        boolean workingCard = false;
-        
-        //keep trying to generate a working card
-        while (!workingCard) {
-        
-            //generate a random index
-            Random randGen = new Random();
-            int cardIndex = randGen.nextInt(21); //21 because we only have three colors so far
-            int colorIndex = cardIndex / 7;
-            int numberIndex = cardIndex % 7;
-            
-            boolean[] cardArray = redsInDeck;
-            if (colorIndex == 1) {
-                cardArray = yellowsInDeck;
-            } else if (colorIndex == 2) {
-                cardArray = violetsInDeck;
-            }
-            
-            workingCard = cardArray[numberIndex];
-            if (workingCard) {
-                //add the card to the output lists
-                if (colorIndex == 0) {
-                    targetColors.add("Red");
-                } else if (colorIndex == 1) {
-                    targetColors.add("Yellow");
-                } else {
-                    targetColors.add("Violet");
-                }
-                targetNumbers.add(numberIndex + 1);
-                
-                //remove the card from the deck
-                cardArray[numberIndex] = false;
-            }
-        }
-    }
-    
     
     /**
      * Displays all part of the current game state.
@@ -97,210 +53,19 @@ public class Red7 extends Application {
         
         board.getChildren().add(playerA.getFXGraphics(cardHeight, false));
         
-        /*
-        //player A Hand
-        Text handText = new Text("Player A's Hand");
-        board.getChildren().add(handText);
-        board.getChildren().add(getCardRow(handA));
-        
-        //player A Palette
-        board.getChildren().add(new Text("Player A's Palette:"));
-        board.getChildren().add(getCardRow(paletteA));*/
-        
         //the canvas
         board.getChildren().add(new Text("Canvas:"));
         Rectangle canvasRectangle = new Rectangle(175, 125, canvas.getFXColor());
-        /*
-        if (canvasColor.equals("Red")) {
-            canvasRectangle = new Rectangle(175, 125, Color.RED);
-        } else if (canvasColor.equals("Yellow")) {
-            canvasRectangle = new Rectangle(175, 125, Color.YELLOW);
-        } else {
-            canvasRectangle = new Rectangle(175, 125, Color.VIOLET);
-        }*/
         board.getChildren().add(canvasRectangle);
         
         
         board.getChildren().add(playerB.getFXGraphics(cardHeight, true));
         
-        /*
-        //player B Palette
-        board.getChildren().add(new Text("Player B's Palette:"));
-        board.getChildren().add(getCardRow(paletteB));
-        
-        //player B Hand
-        board.getChildren().add(new Text("Player B's Hand"));
-        board.getChildren().add(getCardRow(handB));
-        */
         
         //set up the scene and make sure it's visible
         stage.setScene(new Scene(board));
         stage.show();
         stage.sizeToScene();
-    }
-    
-    /**
-     * Displays all the parts of the current game state.
-     */
-    public void displayAll(Stage stage, CardColor canvas, ArrayList<Card> paletteA, ArrayList<Card> paletteB, ArrayList<Card> handA, ArrayList<Card> handB) {
-        VBox board = new VBox();
-        board.setSpacing(2);
-        
-        //player A Hand
-        Text handText = new Text("Player A's Hand");
-        board.getChildren().add(handText);
-        board.getChildren().add(getCardRow(handA));
-        
-        //player A Palette
-        board.getChildren().add(new Text("Player A's Palette:"));
-        board.getChildren().add(getCardRow(paletteA));
-        
-        //the canvas
-        board.getChildren().add(new Text("Canvas:"));
-        Rectangle canvasRectangle = new Rectangle(175, 125, canvas.getFXColor());
-        /*
-        if (canvasColor.equals("Red")) {
-            canvasRectangle = new Rectangle(175, 125, Color.RED);
-        } else if (canvasColor.equals("Yellow")) {
-            canvasRectangle = new Rectangle(175, 125, Color.YELLOW);
-        } else {
-            canvasRectangle = new Rectangle(175, 125, Color.VIOLET);
-        }*/
-        board.getChildren().add(canvasRectangle);
-        
-        //player B Palette
-        board.getChildren().add(new Text("Player B's Palette:"));
-        board.getChildren().add(getCardRow(paletteB));
-        
-        //player B Hand
-        board.getChildren().add(new Text("Player B's Hand"));
-        board.getChildren().add(getCardRow(handB));
-        
-        //set up the scene and make sure it's visible
-        stage.setScene(new Scene(board));
-        stage.show();
-        stage.sizeToScene();
-    }
-    
-    /**
-     * Gets a HBox for a single row of cards.
-     */
-    public static HBox getCardRow(ArrayList<Card> cards) {
-        HBox cardsRow = new HBox();
-        //for (int i = 0; i < cards.size(); i++) {
-        for (Card card : cards) {
-            //String color = card.getColor().toString(); //TODO: we're here!
-            //int number = card.getNumber();
-            StackPane cardGraphics = getCardGraphics(card, 100);
-            cardsRow.getChildren().add(cardGraphics);
-        }
-        return cardsRow;
-    }
-        
-    
-    /**
-     * Displays the whole game state.
-     */
-    public static void displayAll(Stage stage, String canvasColor, ArrayList<String> playerAPaletteColors, ArrayList<Integer> playerAPaletteNumbers, ArrayList<String> playerBPaletteColors, ArrayList<Integer> playerBPaletteNumbers, ArrayList<String> playerAHandColors, ArrayList<Integer> playerAHandNumbers, ArrayList<String> playerBHandColors, ArrayList<Integer> playerBHandNumbers) {
-        VBox board = new VBox();
-        board.setSpacing(2);
-        
-        //player A Hand
-        Text handText = new Text("Player A's Hand");
-        board.getChildren().add(handText);
-        board.getChildren().add(getCardRow(playerAHandColors, playerAHandNumbers));
-        
-        //player A Palette
-        board.getChildren().add(new Text("Player A's Palette:"));
-        board.getChildren().add(getCardRow(playerAPaletteColors, playerAPaletteNumbers));
-        
-        //the canvas
-        board.getChildren().add(new Text("Canvas:"));
-        Rectangle canvasRectangle;
-        if (canvasColor.equals("Red")) {
-            canvasRectangle = new Rectangle(175, 125, Color.RED);
-        } else if (canvasColor.equals("Yellow")) {
-            canvasRectangle = new Rectangle(175, 125, Color.YELLOW);
-        } else {
-            canvasRectangle = new Rectangle(175, 125, Color.VIOLET);
-        }
-        board.getChildren().add(canvasRectangle);
-        
-        //player B Palette
-        board.getChildren().add(new Text("Player B's Palette:"));
-        board.getChildren().add(getCardRow(playerBPaletteColors, playerBPaletteNumbers));
-        
-        //player B Hand
-        board.getChildren().add(new Text("Player B's Hand"));
-        board.getChildren().add(getCardRow(playerBHandColors, playerBHandNumbers));
-        
-        //set up the scene and make sure it's visible
-        stage.setScene(new Scene(board));
-        stage.show();
-        stage.sizeToScene();
-    }
-    
-    /**
-     * Gets a HBox for a single row of cards.
-     */
-    public static HBox getCardRow(ArrayList<String> colors, ArrayList<Integer> numbers) {
-        HBox cardsRow = new HBox();
-        for (int i = 0; i < colors.size(); i++) {
-            StackPane cardGraphics = getCardGraphics(colors.get(i), numbers.get(i), 100);
-            cardsRow.getChildren().add(cardGraphics);
-        }
-        return cardsRow;
-    }
-    
-    /**
-     * Gets a StackPane with the graphics for a single card.
-     */
-    public static StackPane getCardGraphics(Card card, int height) {
-        //return getCardGraphics(card.getColor().toString(), card.getNumber(), height);
-        int STANDARD_HEIGHT = 175;
-        double scale = height / (double) STANDARD_HEIGHT;
-        StackPane cardPane = new StackPane();
-        
-        //add the layers to the cardPane
-        Rectangle cardBase = new Rectangle(125 * scale, 175 * scale, card.getFXColor());
-        cardPane.getChildren().add(cardBase);
-        Text cardNumberText = new Text(String.valueOf(card.getNumber()));
-        cardNumberText.setFont(Font.font("System", FontWeight.BOLD, 50.0 * scale));
-        cardNumberText.setFill(card.getFXTextColor());
-        cardPane.getChildren().add(cardNumberText);
-        
-        return cardPane;
-    }
-    
-    
-    /**
-     * Gets a StackPane with the graphics for a single card.
-     */
-    public static StackPane getCardGraphics(String color, int number, int height) {
-        int STANDARD_HEIGHT= 175;
-        double scale = height / (double) STANDARD_HEIGHT;
-        StackPane cardPane = new StackPane();
-        
-        //add the color as a background rectangle
-        Rectangle cardBase = new Rectangle(125 * scale, 175 * scale, Color.VIOLET);
-        if (color.equals("Red")) {
-            cardBase = new Rectangle(125 * scale, 175 * scale, Color.RED);
-        } else if (color.equals("Yellow")) {
-            cardBase = new Rectangle(125 * scale, 175 * scale, Color.YELLOW);
-        }
-        cardPane.getChildren().add(cardBase);
-        
-        //now add the text above that
-        Text cardNumberText = new Text("" + number);
-        cardNumberText.setFont(Font.font("System", FontWeight.BOLD, 50.0 * scale));
-        if (color.equals("Yellow")) {
-            cardNumberText.setFill(Color.BLACK);
-        } else {
-            cardNumberText.setFill(Color.WHITE);
-        }
-        cardPane.getChildren().add(cardNumberText);
-        
-        return cardPane;
     }
     
     /**
@@ -314,6 +79,7 @@ public class Red7 extends Application {
     /**
      * Determines whether the current player is winning.
      */
+     /*
     public static boolean playerWinning(String canvasColor, ArrayList<String> playerPaletteColors, ArrayList<Integer> playerPaletteNumbers, ArrayList<String> opponentPaletteColors, ArrayList<Integer> opponentPaletteNumbers) {
         if (canvasColor.equals("Red")) {
             String maxPlayerColor = "Nothing";
@@ -570,7 +336,7 @@ public class Red7 extends Application {
                 return false;
             }
         }  
-    }
+    }/* */
     
     /**
      * Clones an ArrayList.
@@ -599,89 +365,14 @@ public class Red7 extends Application {
     public void start(Stage primaryStage) {
     
         primaryStage.setTitle("Red 7");
-        primaryStage.setFullScreen(true);
+        //primaryStage.setFullScreen(true);
         
-        //build the deck of cards
-        this.deck = new ArrayList<Card>();
-        
-        
-        //add the cards to the deck
-        for (int cardNumber = 1; cardNumber <= 7; cardNumber++) {
-            deck.add(Card.createCard(new CardColor.Red(), cardNumber));
-            deck.add(Card.createCard(new CardColor.Yellow(), cardNumber));
-            deck.add(Card.createCard(new CardColor.Violet(), cardNumber));
-        }
-        Collections.shuffle(deck);
-        
-        System.out.println("deck: " + deck);
+        Red7Board board = new Red7Board();
         
         
-        
-        
-        
-        //cards that are still in the deck
-        boolean[] violetsInDeck = new boolean[] {true, true, true, true, true, true, true};
-        boolean[] yellowsInDeck = new boolean[] {true, true, true, true, true, true, true};
-        boolean[] redsInDeck = new boolean[] {true, true, true, true, true, true, true};
-        
-        //canvas
-        String canvasColor = "Red";
-        CardColor canvas = new CardColor.Red();
-        
-        //playerA setup
-        ArrayList<String> playerAHandColors = new ArrayList<String>();
-        ArrayList<Integer> playerAHandNumbers = new ArrayList<Integer>();
-        ArrayList<String> playerAPaletteColors = new ArrayList<String>();
-        ArrayList<Integer> playerAPaletteNumbers = new ArrayList<Integer>();
-        
-        ArrayList<Card> playerAHand = new ArrayList<Card>();
-        ArrayList<Card> playerAPalette = new ArrayList<Card>();
-        
-        
-        //deal cards to playerA
-        //1 to the palette
-        dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerAPaletteColors, playerAPaletteNumbers);
-        //playerAPalette.add(dealCard());
-        //4 to the hand
-        for (int i = 0; i < STARTING_HAND_SIZE; i++) {
-            dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerAHandColors, playerAHandNumbers);
-            playerAHand.add(dealCard());
-        }
-        
-        Player playerA = new Player("Player A", playerAHand, dealCard());
-        
-        //playerB setup
-        ArrayList<String> playerBHandColors = new ArrayList<String>();
-        ArrayList<Integer> playerBHandNumbers = new ArrayList<Integer>();
-        ArrayList<String> playerBPaletteColors = new ArrayList<String>();
-        ArrayList<Integer> playerBPaletteNumbers = new ArrayList<Integer>();
-        
-        ArrayList<Card> playerBHand = new ArrayList<Card>();
-        ArrayList<Card> playerBPalette = new ArrayList<Card>();
-        
-        //deal cards to playerB
-        //1 to the palette
-        dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerBPaletteColors, playerBPaletteNumbers);
-        //playerBPalette.add(dealCard());
-        //4 to the hand
-        for (int i = 0; i < STARTING_HAND_SIZE; i++) {
-            dealCard(redsInDeck, yellowsInDeck, violetsInDeck, playerBHandColors, playerBHandNumbers);
-            playerBHand.add(dealCard());
-        }
-        
-        Player playerB = new Player("Player B", playerBHand, dealCard());
         
         //set the first player based on who is winning.
         int currentPlayerIndex;
-        
-        //TODO: remove this conditional after the following method call works
-        /*
-        if (playerWinning(canvasColor, playerAPaletteColors, playerAPaletteNumbers, playerBPaletteColors, playerBPaletteNumbers)) {
-            currentPlayer = 1;
-        } else {
-            currentPlayer = 0;
-        }
-        */
         
         int winning = canvas.whoIsWinning(playerA.getPalette(), playerB.getPalette());
         System.out.println("I think player " + winning + " is winning.");
@@ -696,45 +387,12 @@ public class Red7 extends Application {
         
         /* */
         while (true) {
-        
-            //displayAll(primaryStage, canvasColor, playerAPaletteColors, playerAPaletteNumbers, playerBPaletteColors, playerBPaletteNumbers, playerAHandColors, playerAHandNumbers, playerBHandColors, playerBHandNumbers);
-            
-            //displayAll(primaryStage, canvas, playerAPalette, playerBPalette, playerAHand, playerBHand);
             
             displayAll(primaryStage, canvas, players[0], players[1]);
             
             
             currentPlayer = players[currentPlayerIndex];
             Player opponentPlayer = players[1-currentPlayerIndex];
-            
-            /*
-            ArrayList<String> currentPlayerHandColors;
-            ArrayList<Integer> currentPlayerHandNumbers;
-            ArrayList<String> currentPlayerPaletteColors;
-            ArrayList<Integer> currentPlayerPaletteNumbers;
-            ArrayList<String> opponentHandColors;
-            ArrayList<Integer> opponentHandNumbers;
-            ArrayList<String> opponentPaletteColors;
-            ArrayList<Integer> opponentPaletteNumbers;
-            if (currentPlayer == 0) {
-                currentPlayerHandColors = playerAHandColors;
-                currentPlayerHandNumbers = playerAHandNumbers;
-                currentPlayerPaletteColors = playerAPaletteColors;
-                currentPlayerPaletteNumbers = playerAPaletteNumbers;
-                opponentHandColors = playerBHandColors;
-                opponentHandNumbers = playerBHandNumbers;
-                opponentPaletteColors = playerBPaletteColors;
-                opponentPaletteNumbers = playerBPaletteNumbers;
-            } else {
-                currentPlayerHandColors = playerBHandColors;
-                currentPlayerHandNumbers = playerBHandNumbers;
-                currentPlayerPaletteColors = playerBPaletteColors;
-                currentPlayerPaletteNumbers = playerBPaletteNumbers;
-                opponentHandColors = playerAHandColors;
-                opponentHandNumbers = playerAHandNumbers;
-                opponentPaletteColors = playerAPaletteColors;
-                opponentPaletteNumbers = playerAPaletteNumbers;
-            }*/
             
             if (currentPlayer.getHand().size() == 0) {
                 break;
@@ -767,13 +425,7 @@ public class Red7 extends Application {
             Player playerAfterMove = currentPlayer;
             CardColor newCanvasColor = canvas;
             
-            //TODO: we'll be able to remove these array lists!  Woooooo
-            /*
-            ArrayList<String> newPlayerPaletteColors = cloneAL(currentPlayerPaletteColors);
-            ArrayList<Integer> newPlayerPaletteNumbers = cloneAL(currentPlayerPaletteNumbers);
-            ArrayList<String> newPlayerHandColors = cloneAL(currentPlayerHandColors);
-            ArrayList<Integer> newPlayerHandNumbers = cloneAL(currentPlayerHandNumbers);
-            */
+            
             //String newCanvasColor = canvasColor;
             boolean playToPalette = false;
             boolean playToCanvas = false;
@@ -826,14 +478,6 @@ public class Red7 extends Application {
                 Card cardToPalette = currentPlayer.getHand().get(cardIndex);
                 playerAfterMove = playerAfterMove.moveToPalette(cardToPalette);
                 
-                /*
-                String color = currentPlayerHandColors.get(cardIndex);
-                int number = currentPlayerHandNumbers.get(cardIndex);
-                newPlayerHandColors.remove(cardIndex);
-                newPlayerHandNumbers.remove(cardIndex);
-                newPlayerPaletteColors.add(color);
-                newPlayerPaletteNumbers.add(number);
-                */
             }
             
             if (playToCanvas) {
@@ -842,11 +486,7 @@ public class Red7 extends Application {
                 for (int i = 0; i < playerAfterMove.getHand().size(); i++) {
                     Card card = playerAfterMove.getHand().get(i);
                     playChoices.add(i + ": Play " + card + " to the canvas.");
-                    /*
-                    String color = newPlayerHandColors.get(i);
-                    int number = newPlayerHandNumbers.get(i);
-                    playChoices.add(i + ": Play " + color + " " + number + " to the canvas.");
-                    */
+                    
                 }
                 dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
                 dialog.setTitle("Canvas card");
@@ -871,12 +511,6 @@ public class Red7 extends Application {
                 playerAfterMove = playerAfterMove.moveToCanvas(cardToCanvas);
                 newCanvasColor = cardToCanvas.getColor();
                 
-                /*
-                String color = newPlayerHandColors.get(cardIndex);
-                int number = newPlayerHandNumbers.get(cardIndex);
-                newPlayerHandColors.remove(cardIndex);
-                newPlayerHandNumbers.remove(cardIndex);
-                newCanvasColor = color;*/
             }
             if (newCanvasColor.whoIsWinning(playerAfterMove.getPalette(), opponentPlayer.getPalette()) == 0) {
                 System.out.println("That move works!");
@@ -887,27 +521,9 @@ public class Red7 extends Application {
                 System.out.println("That move doesn't work!");
             }
             
-            /*
-            if (playerWinning(newCanvasColor, newPlayerPaletteColors, newPlayerPaletteNumbers, opponentPaletteColors, opponentPaletteNumbers)) {
-                //great!  Apply the move!
-                System.out.println("That move works!");
-                replaceContentsWithAnother(currentPlayerHandColors, newPlayerHandColors);
-                replaceContentsWithAnother(currentPlayerHandNumbers, newPlayerHandNumbers);
-                replaceContentsWithAnother(currentPlayerPaletteColors, newPlayerPaletteColors);
-                replaceContentsWithAnother(currentPlayerPaletteNumbers, newPlayerPaletteNumbers);
-                canvasColor = newCanvasColor;
-                
-                //switch players
-                currentPlayer = (currentPlayer + 1) % 2; //move to the next player
-                player = players[currentPlayer];
-            } else {
-                System.out.println("That move doesn't work!");
-            }*/
-            
             
             
         }
-        /* */
         
         System.out.println("Player " + currentPlayer.getName() + " loses!");
         
