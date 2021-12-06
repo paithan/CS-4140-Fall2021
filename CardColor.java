@@ -39,7 +39,7 @@ public abstract class CardColor implements Comparable<CardColor> {
     /**
      * Returns which player is winning.
      */
-    public abstract int whoIsWinning(ArrayList<Card> playerAPalette, ArrayList<Card> playerBPalette);
+    public abstract int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette);
     
     /**
      * Main method for testing.
@@ -85,7 +85,7 @@ public abstract class CardColor implements Comparable<CardColor> {
         /**
          * Returns the index of the palette with the highest card.
          */
-        public int whoIsWinning(ArrayList<Card> playerAPalette, ArrayList<Card> playerBPalette) {
+        public int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette) {
             //Card maxACard = Collections.max(playerAPalette);
             /*
             playerAPalette.sort((aCard, bCard) -> {
@@ -148,7 +148,7 @@ public abstract class CardColor implements Comparable<CardColor> {
         /**
          * Returns the index of the palette with more of one color.
          */
-        public int whoIsWinning(ArrayList<Card> playerAPalette, ArrayList<Card> playerBPalette) {
+        public int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette) {
             System.out.println("Inside yellow's version of whoIsWinning.");
             //quantities of each color in the palettes
             //From Red (index 0) to Violet (index 6)
@@ -182,10 +182,73 @@ public abstract class CardColor implements Comparable<CardColor> {
                 //they have the same number of their best colors
                 return 0; //TODO: this is terrible!  We're not actually doing the thing here!!!!
                 
+                //this is our attempt to fix it! :)
+                
+                
             }
         }
     
     } //end of Yellow
+    
+    
+    /**
+     * The color Green.
+     */
+    public static class Green extends CardColor {
+        
+        public Green() {
+        
+        }
+        
+        protected int getColorRank() {
+            return 4;
+        }
+        
+        @Override
+        public String toString() {
+            return "Green";
+        }
+        
+        @Override
+        public Color getFXColor(){
+            return Color.GREEN;
+        }
+        
+        @Override
+        public Color getFXTextColor(){
+            return Color.BLACK;
+        }
+        
+        /**
+         * Returns the index of the palette with more evens.
+         */
+        public int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette) {
+            System.out.println("Inside Green's version of whoIsWinning.");
+            
+            List<Card> evensA = new ArrayList<Card>();
+            for (Card card : playerAPalette) {
+                if (card.getNumber() % 2 == 0) {
+                    evensA.add(card);
+                }
+            }
+            List<Card> evensB = new ArrayList<Card>();
+            for (Card card : playerBPalette) {
+                if (card.getNumber() % 2 == 0) {
+                    evensB.add(card);
+                }
+            }
+            if (evensA.size() > evensB.size()) {
+                return 0;
+            } else if (evensA.size() < evensB.size()) {
+                return 1;
+            } else {
+                //the sizes are the same!
+                return (new Red()).whoIsWinning(evensA, evensB);
+            }
+            
+        }
+    
+    } //end of Green
     
     /**
      * The color Violet.
@@ -203,7 +266,7 @@ public abstract class CardColor implements Comparable<CardColor> {
         /**
          * Returns the index of the palette with more cards below 4.
          */
-        public int whoIsWinning(ArrayList<Card> playerAPalette, ArrayList<Card> playerBPalette) {
+        public int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette) {
             int numPlayerABelow4 = 0;
             Card bestCardForABelow4 = Card.createNullCard();
             for (Card card : playerAPalette) {
