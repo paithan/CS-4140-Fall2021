@@ -118,6 +118,106 @@ public abstract class CardColor implements Comparable<CardColor> {
     } //end of Red 
     
     /**
+     * The color Orange.
+     */
+    public static class Orange extends CardColor {
+        
+        public Orange() {
+        
+        }
+        
+        protected int getColorRank() {
+            return 6;
+        }
+        
+        @Override
+        public String toString() {
+            return "Orange";
+        }
+        
+        @Override
+        public Color getFXColor(){
+            return Color.ORANGE;
+        }
+        
+        @Override
+        public Color getFXTextColor(){
+            return Color.BLACK;
+        }
+        
+        /**
+         * Returns the index of the palette with more of one color.
+         */
+        public int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette) {
+            System.out.println("Inside orange's version of whoIsWinning.");
+            //quantities of each number in the palettes
+            int[] playerAPaletteNumberQuantities = new int[] {0, 0, 0, 0, 0, 0, 0, 0}; //the zeroeth entry should stay zero
+            int[] playerBPaletteNumberQuantities = new int[] {0, 0, 0, 0, 0, 0, 0, 0};
+            for (Card card : playerAPalette) {
+                playerAPaletteNumberQuantities[card.getNumber()] += 1;
+            }
+            for (Card card : playerBPalette) {
+                playerBPaletteNumberQuantities[card.getNumber()] += 1;
+            }
+            int maxAIndex = 0;
+            int maxAQuantity = 0;
+            int maxBIndex = 0;
+            int maxBQuantity = 0;
+            for (int i = 0; i < playerAPaletteNumberQuantities.length; i++) {
+                if (playerAPaletteNumberQuantities[i] >= maxAQuantity) {
+                    maxAQuantity = playerAPaletteNumberQuantities[i];
+                    maxAIndex = i;
+                }
+                if (playerBPaletteNumberQuantities[i] >= maxBQuantity) {
+                    maxBQuantity = playerBPaletteNumberQuantities[i];
+                    maxBIndex = i;
+                }
+            }
+            if (maxAQuantity > maxBQuantity) {
+                return 0;
+            } else if (maxBQuantity > maxAQuantity) {
+                return 1;
+            } else {
+                //they have the same amount of their most frequent numbers
+                if (maxAIndex > maxBIndex) {
+                    return 0;
+                } else if (maxAIndex < maxBIndex) {
+                    return 1;
+                } else {
+                    //they have the same amount of their most frequent numbers, and those are the same number
+                    
+                    //find A's best color among the matching numbers
+                    int maxAColorRank = 0;
+                    for (Card card : playerAPalette) {
+                        int aColorRank = card.getColor().getColorRank();
+                        if (card.getNumber() == maxAIndex && aColorRank > maxAColorRank) {
+                            maxAColorRank = aColorRank;
+                        }
+                    }
+                    
+                    //find B's best color among the matching numbers
+                    int maxBColorRank = 0;
+                    for (Card card : playerBPalette) {
+                        int bColorRank = card.getColor().getColorRank();
+                        if (card.getNumber() == maxBIndex && bColorRank > maxBColorRank) {
+                            maxBColorRank = bColorRank;
+                        }
+                    }
+                    
+                    if (maxAColorRank > maxBColorRank) {
+                        return 0;
+                    } else {
+                        return 1;
+                    }
+                    
+                }
+                
+            }
+        }
+    
+    } //end of Orange
+    
+    /**
      * The color Yellow.
      */
     public static class Yellow extends CardColor {
@@ -180,10 +280,59 @@ public abstract class CardColor implements Comparable<CardColor> {
                 return 1;
             } else {
                 //they have the same number of their best colors
-                return 0; //TODO: this is terrible!  We're not actually doing the thing here!!!!
+                //return 0; //TODO: this is terrible!  We're not actually doing the thing here!!!!
                 
                 //this is our attempt to fix it! :)
+                //first find player A's best color
+                int maxAColorRank = 0;
+                int maxAColorHighestNumber = 0;
+                for (int i = 0; i < playerAPaletteColorQuantities.length; i++) {
+                    int numAtColor = playerAPaletteColorQuantities[i];
+                    if (numAtColor == maxANumber) {
+                        int colorRank = 7-i; //because the indices are opposite the color ranks.  duh.
+                        int colorHighestNumber = 0; //this will be the highest number of a card of that color in Player A's palette
+                        for (Card card : playerAPalette) {
+                            if (card.getColor().getColorRank() == colorRank) {
+                                if (card.getNumber() > colorHighestNumber) {
+                                    colorHighestNumber = card.getNumber();
+                                }
+                            }
+                        }
+                        if (colorHighestNumber > maxAColorHighestNumber || (colorHighestNumber == maxAColorHighestNumber && colorRank > maxAColorRank)) {
+                            //we found a new best card in the matching colors, so use that instead
+                            maxAColorRank = colorRank;
+                            maxAColorHighestNumber = colorHighestNumber;
+                        }
+                    }
+                }
+                //now find player B's best color
+                int maxBColorRank = 0;
+                int maxBColorHighestNumber = 0;
+                for (int i = 0; i < playerBPaletteColorQuantities.length; i++) {
+                    int numAtColor = playerBPaletteColorQuantities[i];
+                    if (numAtColor == maxBNumber) {
+                        int colorRank = 7-i; //because the indices are opposite the color ranks.  duh.
+                        int colorHighestNumber = 0; //this will be the highest number of a card of that color in Player A's palette
+                        for (Card card : playerBPalette) {
+                            if (card.getColor().getColorRank() == colorRank) {
+                                if (card.getNumber() > colorHighestNumber) {
+                                    colorHighestNumber = card.getNumber();
+                                }
+                            }
+                        }
+                        if (colorHighestNumber > maxBColorHighestNumber || (colorHighestNumber == maxBColorHighestNumber && colorRank > maxBColorRank)) {
+                            //we found a new best card in the matching colors, so use that instead
+                            maxBColorRank = colorRank;
+                            maxBColorHighestNumber = colorHighestNumber;
+                        }
+                    }
+                }
                 
+                if (maxAColorHighestNumber > maxBColorHighestNumber || (maxAColorHighestNumber == maxBColorHighestNumber && maxAColorRank > maxBColorRank)) {
+                    return 0;
+                } else {
+                    return 1;
+                }
                 
             }
         }
@@ -249,6 +398,63 @@ public abstract class CardColor implements Comparable<CardColor> {
         }
     
     } //end of Green
+    
+    
+    /**
+     * The color Blue.
+     */
+    public static class Blue extends CardColor {
+        
+        public Blue() {
+        
+        }
+        
+        protected int getColorRank() {
+            return 3;
+        }
+        
+        @Override
+        public String toString() {
+            return "Blue";
+        }
+        
+        @Override
+        public Color getFXColor(){
+            return Color.BLUE;
+        }
+        
+        @Override
+        public Color getFXTextColor(){
+            return Color.WHITE;
+        }
+        
+        /**
+         * Returns the index of the palette with more evens.
+         */
+        public int whoIsWinning(List<Card> playerAPalette, List<Card> playerBPalette) {
+            System.out.println("Inside Blue's version of whoIsWinning.");
+            
+            Set<CardColor> aColors = new TreeSet<CardColor>();
+            for (Card card : playerAPalette) {
+                aColors.add(card.getColor());
+            }
+            Set<CardColor> bColors = new TreeSet<CardColor>();
+            for (Card card : playerBPalette) {
+                bColors.add(card.getColor());
+            }
+            
+            if (aColors.size() > bColors.size()) {
+                return 0;
+            } else if (aColors.size() < bColors.size()) {
+                return 1;
+            } else {
+                //both players have the same number of colors
+                return (new Red()).whoIsWinning(playerAPalette, playerBPalette);
+            }
+            
+        }
+    
+    } //end of Blue
     
     /**
      * The color Violet.

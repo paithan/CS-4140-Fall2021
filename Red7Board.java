@@ -70,8 +70,10 @@ public class Red7Board {
         //add the cards to the deck
         for (int cardNumber = 1; cardNumber <= 7; cardNumber++) {
             this.deck.add(Card.createCard(new CardColor.Red(), cardNumber));
+            this.deck.add(Card.createCard(new CardColor.Orange(), cardNumber));
             this.deck.add(Card.createCard(new CardColor.Yellow(), cardNumber));
             this.deck.add(Card.createCard(new CardColor.Green(), cardNumber));
+            this.deck.add(Card.createCard(new CardColor.Blue(), cardNumber));
             this.deck.add(Card.createCard(new CardColor.Violet(), cardNumber));
         }
         Collections.shuffle(this.deck);

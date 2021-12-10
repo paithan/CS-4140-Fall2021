@@ -2,8 +2,10 @@ import java.util.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.application.Application;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.layout.HBox;
@@ -40,6 +42,21 @@ public class Red7 extends Application {
      */
     public Card dealCard() {
         return this.deck.remove(0);
+    }
+    
+    
+    /**
+     * Displays all part of the current game state.
+     */
+    public void displayAll(Stage stage, Red7Board board) {
+        Node boardNode = board.getFXGraphics();
+        VBox region = new VBox();
+        region.getChildren().add(boardNode);
+        
+        //set up the scene and make sure it's visible
+        stage.setScene(new Scene(region));
+        stage.show();
+        stage.sizeToScene();
     }
     
     
@@ -370,7 +387,7 @@ public class Red7 extends Application {
         Red7Board board = new Red7Board();
         
         
-        
+        /*
         //set the first player based on who is winning.
         int currentPlayerIndex;
         
@@ -382,17 +399,19 @@ public class Red7 extends Application {
         
         Player[] players = new Player[] {playerA, playerB};
         Player currentPlayer = players[currentPlayerIndex];
+        */
         
-        System.out.println("Player " + currentPlayer.getName() + " goes first!");
+        System.out.println("Player " + board.getCurrentPlayer().getName() + " goes first!");
         
         /* */
         while (true) {
             
-            displayAll(primaryStage, canvas, players[0], players[1]);
+            displayAll(primaryStage, board);
+            //displayAll(primaryStage, canvas, players[0], players[1]);
             
             
-            currentPlayer = players[currentPlayerIndex];
-            Player opponentPlayer = players[1-currentPlayerIndex];
+            Player currentPlayer = board.getCurrentPlayer();//players[currentPlayerIndex];
+            Player opponentPlayer = board.getPreviousPlayer(); //players[1-currentPlayerIndex];
             
             if (currentPlayer.getHand().size() == 0) {
                 break;
@@ -407,11 +426,11 @@ public class Red7 extends Application {
             playChoices.add("Concede");
             ArrayList<String> choiceChosen = new ArrayList<String>();
             ChoiceDialog<String> dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
-            dialog.setTitle("Player " + currentPlayer.getName() + "'s turn.");
-            dialog.setHeaderText("Player " + currentPlayer.getName() + ", Choose your move.");
+            dialog.setTitle(currentPlayer.getName() + "'s turn.");
+            dialog.setHeaderText(currentPlayer.getName() + ", Choose your move.");
             dialog.setContentText("Options:");
         
-            System.out.println("Player " + currentPlayer.getName() + "'s turn...");
+            System.out.println(currentPlayer.getName() + "'s turn...");
             while (true) {
                 dialog.showAndWait().ifPresent( (response) -> {
                     choiceChosen.add(response);
@@ -423,7 +442,7 @@ public class Red7 extends Application {
             String choice = choiceChosen.get(0);
             
             Player playerAfterMove = currentPlayer;
-            CardColor newCanvasColor = canvas;
+            CardColor newCanvasColor = board.getCanvas();
             
             
             //String newCanvasColor = canvasColor;
@@ -458,7 +477,7 @@ public class Red7 extends Application {
                 }
                 dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
                 dialog.setTitle("Palette card");
-                dialog.setHeaderText("Player " + currentPlayer.getName() + ", pick your card");
+                dialog.setHeaderText(currentPlayer.getName() + ", pick your card");
                 dialog.setContentText("Options:");
                 while (true) {
                     dialog.showAndWait().ifPresent( (response) -> {
@@ -490,7 +509,7 @@ public class Red7 extends Application {
                 }
                 dialog = new ChoiceDialog<String>(playChoices.get(0), playChoices);
                 dialog.setTitle("Canvas card");
-                dialog.setHeaderText("Player " + playerAfterMove.getName() + ", pick your card");
+                dialog.setHeaderText(playerAfterMove.getName() + ", pick your card");
                 dialog.setContentText("Options:");
                 while (true) {
                     dialog.showAndWait().ifPresent( (response) -> {
@@ -514,9 +533,10 @@ public class Red7 extends Application {
             }
             if (newCanvasColor.whoIsWinning(playerAfterMove.getPalette(), opponentPlayer.getPalette()) == 0) {
                 System.out.println("That move works!");
-                canvas = newCanvasColor;
-                players[currentPlayerIndex] = playerAfterMove;
-                currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+                board = new Red7Board(board, newCanvasColor, playerAfterMove);
+                //canvas = newCanvasColor;
+                //players[currentPlayerIndex] = playerAfterMove;
+                //currentPlayerIndex = (currentPlayerIndex + 1) % 2;
             } else {
                 System.out.println("That move doesn't work!");
             }
@@ -525,7 +545,7 @@ public class Red7 extends Application {
             
         }
         
-        System.out.println("Player " + currentPlayer.getName() + " loses!");
+        //System.out.println("Player " + currentPlayer.getName() + " loses!");
         
         
     }
